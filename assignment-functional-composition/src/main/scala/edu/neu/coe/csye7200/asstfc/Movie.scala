@@ -1,5 +1,7 @@
 package edu.neu.coe.csye7200.asstfc
 
+import spray.json.DefaultJsonProtocol.immSeqFormat
+
 import scala.collection.mutable
 import scala.io.{Codec, Source}
 import scala.util._
@@ -100,9 +102,15 @@ object Movie extends App {
 
   //Hint: You may refer to the slides discussed in class for how to serialize object to json
   object MoviesProtocol extends DefaultJsonProtocol {
-    // 20 points
-    // TO BE IMPLEMENTED
-    ???
+
+    implicit val formatFormat=jsonFormat4(Format.apply)
+    implicit val productionFormat=jsonFormat4(Production.apply)
+    implicit val nameFormat=jsonFormat4(Name.apply)
+    implicit val principalFormat=jsonFormat2(Principal.apply)
+    implicit val ratingFormat=jsonFormat2(Rating.apply)
+    implicit val reviewsFormat=jsonFormat7(Reviews.apply)
+    implicit val movieFormat=jsonFormat11(Movie.apply)
+
   }
 
   implicit object IngestibleMovie extends IngestibleMovie
@@ -123,7 +131,10 @@ object Movie extends App {
   def testSerializationAndDeserialization(ms: Seq[Movie]): Boolean = {
     // 5 points
     // TO BE IMPLEMENTED
-    ???
+    import MoviesProtocol._
+    val js=for(m<-ms)yield m.toJson
+    val rms=for(j<-js)yield j.convertTo[Movie]
+    ms.equals(rms)
   }
 
   def getMoviesFromCountry(country: String, movies: Iterator[Try[Movie]]): Try[Seq[Movie]] = {
