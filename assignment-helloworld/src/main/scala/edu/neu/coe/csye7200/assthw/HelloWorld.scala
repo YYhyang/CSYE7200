@@ -11,6 +11,8 @@ package edu.neu.coe.csye7200.assthw
   */
 object HelloWorld extends App {
   def greeting = "Hello World!"
-
+  val list=List(1,2,3)
+  val newList=list map toString
+  newList foreach println
   println(greeting)
 }
